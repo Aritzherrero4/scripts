@@ -10,6 +10,18 @@ day=`date +"%d-%m-%Y"`
 ###############         
 #  FUNCTIONS  #           
 ###############
+RED="\033[01;31m"
+RST="\033[0m"
+function echo() {
+    command echo -e "$@"
+}
+
+function die() {
+    echo
+    echo -e "${RED}${1}${RST}"
+    [[ ${2} = "-h" ]] && ${0} -h
+    exit 1
+}
 
 function sign_kernel() {
 cd
@@ -21,9 +33,9 @@ java -jar "zipsigner-2.1.jar" \
 function zip_kernel() {
 cd 
 cd ${AK2}
-zip -r9 flash-AH.zip * -x README.md flash-AH.zip
+zip -r9 ${kernel_name}.zip * -x README.md ${kernel_name}.zip
 cd
-mv ${AK2}/flash-AH.zip /home/aritzherrero4/
+mv ${AK2}/${kernel_name}.zip ${kout}
 }
 
 # Clean up
@@ -69,9 +81,11 @@ function end_info() {
     echo "SCRIPT FINISHED!"
 
     END=$(date +"%s")
-    DURATION=(${START} - ${END})
+    
+    ELAPSED=$((${END} - ${START}))
+    echo "${RED}DURATION: $((${ELAPSED} / 3600))hrs $(((${ELAPSED} / 60) % 60))min $((${ELAPSED} % 60))sec"
 
-    echo "${RED}DURATION: ${DURATION}${RST}"
+    echo  "${RST}"
     echo
     echo "\a"
     exit
@@ -106,7 +120,10 @@ kernel_branch=8.1.0-unified
 gcc=/home/aritzherrero4/gcc
 #clang folder
 clang=/home/aritzherrero4/clang
-
+#kernel name
+kernel_name=flash-AH
+#compiled, zip and signed out folder
+Kout=/home/aritzherrero4/fkz
 
 
 ################
