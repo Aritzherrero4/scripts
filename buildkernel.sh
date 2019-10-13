@@ -1,10 +1,37 @@
 #!/bin/bash
 cd ..
 
+#Options
+T=""
+while [ -n "$1" ]; do 
+	case "$1" in
+		-t | --test) 
+			shift
+			echo "Test build"
+			T="-test"
+			;;
+
+    		-c | --clean)
+			shift
+			echo "Clean build"
+        		cd kernel8998/
+			make clean
+			make mrproper
+			rm -rf out/
+			echo "Done. Starting build..."
+			cd .. 
+			;;
+
+    		*) echo "Option $1 not recognized" ;;
+    	esac
+done
+
+
 # Set Kernel Info
+export T
 export VERA="amethyst"
 export VERB="$(date +%Y%m%d)"
-VERSION="${VERA}-${VERB}"
+VERSION="${VERA}-${VERB}${T}"
 
 # Export User and Host 
 export KBUILD_BUILD_USER=aritzherrero4
